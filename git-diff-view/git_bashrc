@@ -1,0 +1,58 @@
+# source this from your .bashrc
+
+function expand-argument {
+   if [ ! -z "$2" ]; then
+      echo "$1" "$2"     # a change vs. another
+   elif [ -z "$1" ]; then
+      echo ""            # working vs. index
+   elif [ "$1" = "--cached" ]; then
+      echo "--cached"    # index vs. HEAD
+   else
+      echo "$1^" "$1"    # a change vs its preceeding
+   fi
+}
+
+function gd {
+   # describe a change
+   argu=`expand-argument $@`
+   git diff --name-status $argu
+}
+
+function gdd {
+   argu=`expand-argument $@`
+   reviewDir=`GIT_EXTERNAL_DIFF=git_diff_to_review.py git diff $argu`
+   chmod -R u-w $reviewDir
+   diff_view.py $DIFF_VIEW_PARAM $reviewDir
+   chmod -R u+w $reviewDir
+   rm -rf $reviewDir
+}
+
+function gddl {
+   argu=`expand-argument $@`
+   reviewDir=`GIT_EXTERNAL_DIFF=git_diff_to_review.py git diff $argu`
+   diff_view.py $DIFF_VIEW_PARAM -l $reviewDir
+   rm -rf $reviewDir
+}
+
+function gr {
+   argu=`expand-argument $@`
+   reviewDir=`GIT_EXTERNAL_DIFF=git_diff_to_review.py git diff $argu`
+   if [ -d "$reviewDir" ]; then
+      theDir=`dirname $reviewDir`
+      theBase=`basename $reviewDir`
+      pushd "$theDir" >/dev/null
+      tar zcf "$theBase.tgz" "$theBase"
+      popd >/dev/null
+      echo "$reviewDir.tgz"
+      rm -rf $reviewDir
+   else
+      echo "something wrong with $reviewDir"
+   fi
+}
+
+function gl {
+   #git log --pretty=format:'%h by %an %ar: %s' -n 20 | awk '{system("git describe " $1 " |tr -d '\''\n'\''");$1="";print}'
+   git log -20 --pretty=format:'%h-TAG-%C(blue)%an|%C(red)%cr|%Cgreen%d %Creset%s' | awk -F "-TAG-" '{system("git describe --match init --always " $1 " |tr -d '\''\n'\''");$1="|";print}' | column -ts '|'
+}
+
+alias gitloc="git ls-files | xargs -n1 git blame --line-porcelain | sed -n 's/^author //p' | sort -f | uniq -ic |sort -nr"
