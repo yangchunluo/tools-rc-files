@@ -15,7 +15,7 @@ def _process(args):
   for commit in repo.iter_commits():
     is_base = False
     for msg_line in commit.message.split('\n'):
-      if msg_line.startswith('PRE_COMMITQUEUE_JOB:voyager_orion_update_base'):
+      if 'PRE_COMMITQUEUE_JOB:voyager_orion_update_base' in msg_line:
         is_base = True
       if msg_line.startswith('Differential Revision: '):
         cr = msg_line.replace('Differential Revision: ', '')
