@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # called from git diff to:
 #   1. make a review directory in /tmp/ using date and parent pid, if not already there

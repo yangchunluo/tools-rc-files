@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Take a review directory, like /tmp/20080813_14450,
 #   1 read _file.list
@@ -36,7 +36,7 @@ def Main():
    # Parse _file.list from reviewDir
    idxFileName = "%s/_file.list"%reviewDir
    if not os.path.isfile(idxFileName):
-      print "Cannot find _file.list in the review directory!"
+      print("Cannot find _file.list in the review directory!")
       sys.exit(1)
    f = open(idxFileName)
    prefix = reviewDir
@@ -51,7 +51,7 @@ def Main():
          i += 1
       else:
          printFiles(files);
-         print "Next/Previous/exit(N/p/x/<number>)?"
+         print("Next/Previous/exit(N/p/x/<number>)?")
          input = sys.stdin.readline();
          try:
             i = int(input)
@@ -91,7 +91,7 @@ def FindLocalFile(filename):
 def printFiles(files):
    i = 0;
    while i < len(files):
-      print "%s [%d]"%(files[i], i)
+      print("%s [%d]"%(files[i], i))
       i += 1
    return
 
